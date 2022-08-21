@@ -1,4 +1,9 @@
-import { AnalysisTable, Grammar, Lexem, Production } from "@ronico.billy/ll/lib/interface";
+import {
+    AnalysisTable,
+    Grammar,
+    Lexem,
+    Production,
+} from "@ronico.billy/ll/lib/interface";
 
 export const lexems: Lexem[] = [
     {
@@ -14,6 +19,10 @@ export const lexems: Lexem[] = [
         value: "^\\:$",
     },
     {
+        name: "InterogationTwoPoint",
+        value: "^\\?\\:$",
+    },
+    {
         name: "Separator",
         value: "^\\;$",
     },
@@ -24,7 +33,7 @@ export const lexems: Lexem[] = [
     },
     {
         name: "TypeBase",
-        value: "^number|string|boolean|null|undefined$",
+        value: "^(number|string|boolean|null|undefined)$",
     },
     {
         name: "Key",
@@ -54,6 +63,7 @@ export const terms: string[] = [
     "OpenBrace",
     "CloseBrace",
     "TwoPoint",
+    "InterogationTwoPoint",
     "Separator",
     "Blank",
     "TypeBase",
@@ -64,109 +74,38 @@ export const terms: string[] = [
     "CloseParenthesis",
 ];
 
-export const noTerms: string[] = ["S", "Decla", "Value", "T", "E", "A"];
+export const noTerms: string[] = [
+    "S",
+    "Decla",
+    "Value",
+    "B",
+    "C",
+    "T",
+    "E",
+    "A",
+];
 
 export const productions: Production[] = [
     { noTerm: "S", sequence: ["OpenBrace", "Decla", "CloseBrace"] },
     {
         noTerm: "Decla",
-        sequence: ["Key", "TwoPoint", "Value", "Separator", "Decla"],
+        sequence: ["Key", "B", "Value", "Separator", "Decla"],
     },
+    { noTerm: "B", sequence: ["TwoPoint"] },
+    { noTerm: "B", sequence: ["InterogationTwoPoint"] },
     { noTerm: "Decla", sequence: [""] },
     { noTerm: "Value", sequence: ["T", "E"] },
-    { noTerm: "T", sequence: ["TypeBase", "A"] },
-    { noTerm: "T", sequence: ["S", "A"] },
+    { noTerm: "T", sequence: ["C", "A"] },
+    { noTerm: "C", sequence: ["TypeBase"] },
+    { noTerm: "C", sequence: ["S"] },
     {
-        noTerm: "T",
-        sequence: ["OpenParenthesis", "Value", "CloseParenthesis", "A"],
+        noTerm: "C",
+        sequence: ["OpenParenthesis", "Value", "CloseParenthesis"],
     },
     { noTerm: "E", sequence: ["Pipe", "T", "E"] },
     { noTerm: "E", sequence: [""] },
     { noTerm: "A", sequence: ["Array", "A"] },
     { noTerm: "A", sequence: [""] },
-];
-
-export const analysisTables: AnalysisTable[] = [
-    {
-        noTerm: "S",
-        terms: ["OpenBrace"],
-        production: productions[0],
-    },
-    {
-        noTerm: "Decla",
-        terms: ["Key"],
-        production: productions[1],
-    },
-    {
-        noTerm: "Decla",
-        terms: ["CloseBrace"],
-        production: productions[2],
-    },
-    {
-        noTerm: "Value",
-        terms: ["OpenBrace"],
-        production: productions[3],
-    },
-    {
-        noTerm: "Value",
-        terms: ["TypeBase"],
-        production: productions[3],
-    },
-    {
-        noTerm: "Value",
-        terms: ["OpenParenthesis"],
-        production: productions[3],
-    },
-    {
-        noTerm: "T",
-        terms: ["OpenBrace"],
-        production: productions[5],
-    },
-    {
-        noTerm: "T",
-        terms: ["TypeBase"],
-        production: productions[4],
-    },
-    {
-        noTerm: "T",
-        terms: ["OpenParenthesis"],
-        production: productions[6],
-    },
-    {
-        noTerm: "E",
-        terms: ["Separator"],
-        production: productions[8],
-    },
-    {
-        noTerm: "E",
-        terms: ["Pipe"],
-        production: productions[7],
-    },
-    {
-        noTerm: "E",
-        terms: ["CloseParenthesis"],
-        production: productions[8],
-    },
-    {
-        noTerm: "A",
-        terms: ["Separator"],
-        production: productions[10],
-    },
-    {
-        noTerm: "A",
-        terms: ["Array"],
-        production: productions[9],
-    },
-    {
-        noTerm: "A",
-        terms: ["Pipe"],
-        production: productions[10],
-    },
-    {
-        noTerm: "A",
-        terms: ["CloseParenthesis"],
-        production: productions[10],
-    },
 ];
 
 export const grammar: Grammar = {

@@ -9,7 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ronico.billy/ll": "^0.0.2",
+    "@ronico.billy/ll": "^0.0.7",
+    "@ronico.billy/range": "^0.1.1",
     "ll": "link:@types/@ronico.billy/ll",
     "next": "12.2.5",
     "react": "18.2.0",
@@ -24,7 +25,10 @@
     "autoprefixer": "^10.4.8",
     "eslint": "8.22.0",
     "eslint-config-next": "12.2.5",
+    "ll@latest": "link:@types/@ronico.billy/ll@latest",
     "postcss": "^8.4.16",
+    "range": "link:@types/@ronico.billy/range",
+    "range@latest": "link:@types/@ronico.billy/range@latest",
     "tailwindcss": "^3.1.8",
     "typescript": "4.7.4"
   }

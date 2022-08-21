@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { SiTypescript } from "react-icons/si";
-import { BsBraces } from "react-icons/bs";
-import { useEffect, useRef, useState } from "react";
+import { BsBraces, BsFillTrashFill } from "react-icons/bs";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LL, parser, scanner } from "@ronico.billy/ll";
 import { grammar, lexems } from "../logic/variables";
 import {
@@ -11,15 +11,32 @@ import {
     treeToJsonSchema,
 } from "../logic/transformation";
 import { formatStringError } from "../logic/utils";
+import Head from "next/head";
 
 const Home: NextPage = () => {
     const timeoutInput = useRef<number | null>(null);
     const [tscode, setTscode] = useState("{}");
+    const numberAlineaInTscode = useMemo(
+        () => tscode.split("").filter((s) => s === "\n").length + 1,
+        [tscode]
+    );
     const [jsonSchemaCode, setJsonSchemaCode] = useState("");
     const [isDone, setIsDone] = useState(false);
     const [textError, setTextError] = useState("");
+    const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+    const lineRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.value = "{}";
+        }
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js");
+        }
+    }, []);
+
+    useEffect(() => {
+        console.log(numberAlineaInTscode);
         initNode();
         const tokens = scanner(lexems, tscode);
         const k = 1;
@@ -28,7 +45,10 @@ const Home: NextPage = () => {
             try {
                 const resultParse = parser(ll, pop, ["Blank"]);
                 if (!Array.isArray(tokens)) {
-                    console.log(tokens);
+                    setIsDone(false);
+                    setTextError(
+                        `Lexical Error: Unknown Token [${tokens.unknownChar}] at ${tokens.line}:${tokens.col}`
+                    );
                 } else {
                     const result = resultParse(tokens);
                     if (typeof result === "boolean") {
@@ -54,56 +74,85 @@ const Home: NextPage = () => {
         } else {
             throw new Error("Not LL(" + k + ")");
         }
-    }, [tscode]);
+    }, [numberAlineaInTscode, tscode]);
 
     return (
-        <div className="container mx-auto h-screen flex items-center gap-x-12">
-            <div className="h-3/4 w-full bg-editor-2 flex flex-col">
-                <h2 className="font-semibold text-white flex">
-                    <span className="bg-editor-1 py-2 px-4 border-4 border-editor-2 flex justify-center items-center gap-x-2">
-                        <SiTypescript className="text-xl text-blue-600 bg-white" />
-                        Typescript
-                    </span>
-                </h2>
-                <textarea
-                    className="bg-editor-1 w-full flex-grow resize-none outline-none px-4 py-4 font-secondaire font-semibold text-gray-300"
-                    onInput={(e) => {
-                        setTscode(e.currentTarget.value);
-                    }}
-                    value={tscode}
-                ></textarea>
-            </div>
-            <div className="h-3/4 w-full bg-editor-2 flex flex-col">
-                <h2 className="font-semibold text-white flex items-center">
-                    <span className="bg-editor-1 py-2 px-4 border-4 border-editor-2 flex justify-center items-center gap-x-2">
-                        <BsBraces className="text-xl text-white" />
-                        JsonSchema
-                    </span>
-                    {isDone ? (
-                        <span className="bg-green-600 py-1 px-4 border-4 border-editor-2 flex justify-center items-center gap-x-2 rounded-xl font-black ml-auto mr-4">
-                            DONE
+        <>
+            <Head>
+                <link
+                    rel="apple-touch-icon"
+                    sizes="180x180"
+                    href="/favicon/apple-touch-icon.png"
+                />
+                <link
+                    rel="icon"
+                    type="image/png"
+                    sizes="32x32"
+                    href="/favicon/favicon-32x32.png"
+                />
+                <link
+                    rel="icon"
+                    type="image/png"
+                    sizes="16x16"
+                    href="/favicon/favicon-16x16.png"
+                />
+                <link rel="manifest" href="/site.webmanifest" />
+            </Head>
+            <div className="container mx-auto px-4 h-screen flex items-center gap-x-12">
+                <div className="h-3/4 w-full bg-editor-2 flex flex-col">
+                    <h2 className="font-semibold text-white flex">
+                        <span className="bg-editor-1 py-2 px-4 border-4 border-editor-2 flex justify-center items-center gap-x-2">
+                            <SiTypescript className="text-xl text-blue-600 bg-white" />
+                            Typescript
                         </span>
-                    ) : (
-                        <span className="bg-red-600 py-1 px-4 border-4 border-editor-2 flex justify-center items-center gap-x-2 rounded-xl font-black ml-auto mr-4">
-                            ERROR
+                        <button
+                            className="ml-auto mr-4 text-gray-300"
+                            onClick={() => {
+                                if (textareaRef.current) {
+                                    textareaRef.current.value = "";
+                                }
+                                setTscode("");
+                            }}
+                        >
+                            <BsFillTrashFill />
+                        </button>
+                    </h2>
+                    <div className="flex flex-grow overflow-hidden">
+                        
+                    </div>
+                </div>
+                <div className="h-3/4 w-full bg-editor-2 flex flex-col">
+                    <h2 className="font-semibold text-white flex items-center">
+                        <span className="bg-editor-1 py-2 px-4 border-4 border-editor-2 flex justify-center items-center gap-x-2">
+                            <BsBraces className="text-xl text-white" />
+                            JsonSchema
                         </span>
-                    )}
-                </h2>
-                <div className="bg-editor-1 w-full flex-grow resize-none outline-none text-white px-4 py-4 text-sm font-semibold">
-                    {isDone ? (
-                        <pre>{jsonSchemaCode}</pre>
-                    ) : (
-                        <div className="bg-editor-2 px-4 py-4">
-                            <pre
-                                dangerouslySetInnerHTML={{
-                                    __html: formatStringError(textError),
-                                }}
-                            ></pre>
-                        </div>
-                    )}
+                        {isDone ? (
+                            <span className="bg-green-600 py-1 px-4 border-4 border-editor-2 flex justify-center items-center gap-x-2 rounded-xl font-black ml-auto mr-4">
+                                DONE
+                            </span>
+                        ) : (
+                            <span className="bg-red-600 py-1 px-4 border-4 border-editor-2 flex justify-center items-center gap-x-2 rounded-xl font-black ml-auto mr-4">
+                                ERROR
+                            </span>
+                        )}
+                    </h2>
+                    <div className="bg-editor-1 w-full flex-grow overflow-auto resize-none outline-none text-white px-4 py-4 text-sm font-semibold">
+                        {isDone ? (
+                            <pre>{jsonSchemaCode}</pre>
+                        ) : (
+                            <div className="bg-editor-2 px-4 py-4">
+                                <pre
+                                    dangerouslySetInnerHTML={{
+                                        __html: formatStringError(textError),
+                                    }}
+                                ></pre>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

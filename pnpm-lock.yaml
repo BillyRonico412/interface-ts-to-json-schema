@@ -1,7 +1,8 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@ronico.billy/ll': ^0.0.2
+  '@ronico.billy/ll': ^0.0.7
+  '@ronico.billy/range': ^0.1.1
   '@types/node': 18.7.8
   '@types/react': 18.0.17
   '@types/react-dom': 18.0.6
@@ -10,8 +11,11 @@ specifiers:
   eslint: 8.22.0
   eslint-config-next: 12.2.5
   ll: link:@types/@ronico.billy/ll
+  ll@latest: link:@types/@ronico.billy/ll@latest
   next: 12.2.5
   postcss: ^8.4.16
+  range: link:@types/@ronico.billy/range
+  range@latest: link:@types/@ronico.billy/range@latest
   react: 18.2.0
   react-dom: 18.2.0
   react-icons: ^4.4.0
@@ -19,7 +23,8 @@ specifiers:
   typescript: 4.7.4
 
 dependencies:
-  '@ronico.billy/ll': 0.0.2
+  '@ronico.billy/ll': 0.0.7
+  '@ronico.billy/range': 0.1.1
   ll: link:@types/@ronico.billy/ll
   next: 12.2.5_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
@@ -34,7 +39,10 @@ devDependencies:
   autoprefixer: 10.4.8_postcss@8.4.16
   eslint: 8.22.0
   eslint-config-next: 12.2.5_4rv7y5c6xz3vfxwhbrcxxi73bq
+  ll@latest: link:@types/@ronico.billy/ll@latest
   postcss: 8.4.16
+  range: link:@types/@ronico.billy/range
+  range@latest: link:@types/@ronico.billy/range@latest
   tailwindcss: 3.1.8
   typescript: 4.7.4
 
@@ -239,8 +247,12 @@ packages:
       fastq: 1.13.0
     dev: true
 
-  /@ronico.billy/ll/0.0.2:
-    resolution: {integrity: sha512-u7/gA1Rbns/XkJmY5w+VR2MmaeUogZv47dzHExGX0k9PJ7/zKjr70dZSe0v/xWwoiFINBcpEqbyzzIbGgsGtCw==}
+  /@ronico.billy/ll/0.0.7:
+    resolution: {integrity: sha512-UlqW+flXgpwytlngCF5poiaHqn156p/0YQ1jHoCXCw7rfR5LrjfW+1t49XzJrNNsqxXUYxtxfkfVnLp7//AQrQ==}
+    dev: false
+
+  /@ronico.billy/range/0.1.1:
+    resolution: {integrity: sha512-dGddVgnyiQLajEuCmwN9lYi1l/VVdw04ZConhQ1AI2s3AH5Pa8NmHBd4Lh1X1bhK17Tu8Q21SB6U7fXZB1Li7Q==}
     dev: false
 
   /@rushstack/eslint-patch/1.1.4:

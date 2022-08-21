@@ -5,7 +5,7 @@ import {
     TypeBase,
     Key,
     Node,
-} from "@ronico.billy/ll/lib/interface";
+} from "../logic/interface";
 
 export const parentNode = new TypeObject(null, []);
 
@@ -21,7 +21,8 @@ export const initNode = () => {
     parentNode.parent = null;
     parentNode.value = "";
     parentNode.childrens = [];
-    parentNode.isArray = false;
+    parentNode.isArrayNumber = 0;
+    parentNode.isRequired = false;
     currentNode = null;
 };
 
@@ -60,6 +61,17 @@ const pop_TwoPoint = () => {
     } else {
         const newCompo = new Compo(currentNode as Key, []);
         currentNode.childrens.push(newCompo);
+        currentNode = newCompo;
+    }
+};
+
+const pop_InterogationTwoPoint = () => {
+    if (currentNode === null || currentNode.type !== TypeNode.Key) {
+        throw new Error("Transform Tree Error");
+    } else {
+        const newCompo = new Compo(currentNode as Key, []);
+        currentNode.childrens.push(newCompo);
+        currentNode.isRequired = false;
         currentNode = newCompo;
     }
 };
@@ -105,7 +117,7 @@ const pop_Array = () => {
     } else {
         const lastChildren =
             currentNode.childrens[currentNode.childrens.length - 1];
-        lastChildren.isArray = true;
+        lastChildren.isArrayNumber += 1;
     }
 };
 
@@ -151,6 +163,9 @@ export const pop = (term: string, value: string) => {
         case "TwoPoint":
             pop_TwoPoint();
             break;
+        case "InterogationTwoPoint":
+            pop_InterogationTwoPoint();
+            break;
         case "Separator":
             pop_Separator();
             break;
@@ -181,7 +196,9 @@ const TypeObjectToJsonSchema = (node: Node) => {
     }
     const jsonSchema: any = {};
     jsonSchema.type = "object";
-    jsonSchema.required = node.childrens.map((child) => child.value);
+    jsonSchema.required = node.childrens
+        .filter((child) => child.isRequired)
+        .map((child) => child.value);
     jsonSchema.properties = {};
     node.childrens.forEach((child) => {
         jsonSchema.properties[child.value] = treeToJsonSchema(
@@ -196,9 +213,9 @@ const CompoToJsonSchema = (node: Node) => {
         throw new Error("Transform JsonSchema Error");
     }
     let jsonSchema: any = {};
-    if (node.isArray) {
+    if (node.isArrayNumber) {
         jsonSchema.type = "array";
-        node.isArray = false;
+        node.isArrayNumber -= 1;
         jsonSchema.items = treeToJsonSchema(node);
     } else if (node.childrens.length === 1) {
         jsonSchema = treeToJsonSchema(node.childrens[0]);
@@ -215,9 +232,9 @@ const TypeBaseToJsonSchema = (node: Node) => {
         throw new Error("Transform JsonSchema Error");
     }
     const jsonSchema: any = {};
-    if (node.isArray) {
+    if (node.isArrayNumber) {
         jsonSchema.type = "array";
-        node.isArray = false;
+        node.isArrayNumber -= 1;
         jsonSchema.items = treeToJsonSchema(node);
     } else {
         jsonSchema.type = node.value;
