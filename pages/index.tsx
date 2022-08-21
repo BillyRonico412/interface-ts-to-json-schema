@@ -11,6 +11,7 @@ import {
     treeToJsonSchema,
 } from "../logic/transformation";
 import { formatStringError } from "../logic/utils";
+import range from "@ronico.billy/range";
 import Head from "next/head";
 
 const Home: NextPage = () => {
@@ -118,7 +119,47 @@ const Home: NextPage = () => {
                         </button>
                     </h2>
                     <div className="flex flex-grow overflow-hidden">
-                        
+                        <div
+                            className="text-gray-300 px-2 py-4 font-black overflow-hidden"
+                            ref={lineRef}
+                        >
+                            <pre className="text-right">
+                                {range
+                                    .range(numberAlineaInTscode)
+                                    .map((it) => it + 1 + "\n")}
+                            </pre>
+                        </div>
+                        <textarea
+                            ref={textareaRef}
+                            className="bg-editor-1 w-full flex-grow resize-none outline-none px-4 py-4 font-secondaire font-semibold text-gray-300"
+                            onChange={(e) => {
+                                if (lineRef.current) {
+                                    lineRef.current.scrollTop =
+                                        e.currentTarget.scrollTop;
+                                }
+                                if (timeoutInput.current !== null) {
+                                    window.clearTimeout(timeoutInput.current);
+                                }
+                                const value = e.currentTarget.value;
+                                timeoutInput.current = window.setTimeout(() => {
+                                    setTscode(value);
+                                    timeoutInput.current = null;
+                                }, 1000);
+                            }}
+                            onPaste={(e) => {
+                                if (lineRef.current) {
+                                    lineRef.current.scrollTop =
+                                        e.currentTarget.scrollTop;
+                                }
+                                setTscode(e.currentTarget.value);
+                            }}
+                            onScroll={(e) => {
+                                if (lineRef.current) {
+                                    lineRef.current.scrollTop =
+                                        e.currentTarget.scrollTop;
+                                }
+                            }}
+                        ></textarea>
                     </div>
                 </div>
                 <div className="h-3/4 w-full bg-editor-2 flex flex-col">
