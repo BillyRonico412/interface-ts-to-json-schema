@@ -18,7 +18,7 @@ import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 
 const notyf = new Notyf({
-    position: {x: "center", y: "bottom"}
+    position: { x: "center", y: "bottom" },
 });
 
 const Home: NextPage = () => {
@@ -179,20 +179,23 @@ const Home: NextPage = () => {
                             JsonSchema
                         </span>
                         <div className="ml-auto mr-4 flex items-center gap-x-4">
-                            <button
-                                className="text-gray-300"
-                                onClick={async () => {
-                                    if (textareaRef.current) {
-                                        await navigator.clipboard.writeText(
-                                            jsonSchemaCode
-                                        );
+                            {isDone && (
+                                <button
+                                    className="text-gray-300"
+                                    onClick={async () => {
+                                        if (textareaRef.current) {
+                                            await navigator.clipboard.writeText(
+                                                jsonSchemaCode
+                                            );
 
-                                        notyf.success("Copy successfuly!");
-                                    }
-                                }}
-                            >
-                                <FaCopy />
-                            </button>
+                                            notyf.success("Copy successfuly!");
+                                        }
+                                    }}
+                                >
+                                    <FaCopy />
+                                </button>
+                            )}
+
                             {isDone ? (
                                 <span className="bg-green-600 py-1 px-4 border-4 border-editor-2 flex justify-center items-center gap-x-2 rounded-xl font-black">
                                     DONE
