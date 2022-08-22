@@ -13,12 +13,14 @@
     "@ronico.billy/range": "^0.1.1",
     "ll": "link:@types/@ronico.billy/ll",
     "next": "12.2.5",
+    "notyf": "^3.10.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0"
   },
   "devDependencies": {
     "@types/node": "18.7.8",
+    "@types/notyf": "^3.0.0",
     "@types/react": "18.0.17",
     "@types/react-dom": "18.0.6",
     "@types/react-icons": "^3.0.0",

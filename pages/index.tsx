@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import { SiTypescript } from "react-icons/si";
+import { FaCopy } from "react-icons/fa";
 import { BsBraces, BsFillTrashFill } from "react-icons/bs";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LL, parser, scanner } from "@ronico.billy/ll";
@@ -13,10 +14,18 @@ import {
 import { formatStringError } from "../logic/utils";
 import range from "@ronico.billy/range";
 import Head from "next/head";
+import { Notyf } from "notyf";
+import "notyf/notyf.min.css";
+
+const notyf = new Notyf({
+    position: {x: "center", y: "bottom"}
+});
 
 const Home: NextPage = () => {
     const timeoutInput = useRef<number | null>(null);
-    const [tscode, setTscode] = useState("{}");
+    const [tscode, setTscode] = useState(
+        "{\n   first: (number|string[])[];\n   second: boolean;\n}"
+    );
     const numberAlineaInTscode = useMemo(
         () => tscode.split("").filter((s) => s === "\n").length + 1,
         [tscode]
@@ -29,7 +38,8 @@ const Home: NextPage = () => {
 
     useEffect(() => {
         if (textareaRef.current) {
-            textareaRef.current.value = "{}";
+            textareaRef.current.value =
+                "{\n   first: (number|string[])[];\n   second: boolean;\n}";
         }
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/sw.js");
@@ -168,15 +178,31 @@ const Home: NextPage = () => {
                             <BsBraces className="text-xl text-white" />
                             JsonSchema
                         </span>
-                        {isDone ? (
-                            <span className="bg-green-600 py-1 px-4 border-4 border-editor-2 flex justify-center items-center gap-x-2 rounded-xl font-black ml-auto mr-4">
-                                DONE
-                            </span>
-                        ) : (
-                            <span className="bg-red-600 py-1 px-4 border-4 border-editor-2 flex justify-center items-center gap-x-2 rounded-xl font-black ml-auto mr-4">
-                                ERROR
-                            </span>
-                        )}
+                        <div className="ml-auto mr-4 flex items-center gap-x-4">
+                            <button
+                                className="text-gray-300"
+                                onClick={async () => {
+                                    if (textareaRef.current) {
+                                        await navigator.clipboard.writeText(
+                                            jsonSchemaCode
+                                        );
+
+                                        notyf.success("Copy successfuly!");
+                                    }
+                                }}
+                            >
+                                <FaCopy />
+                            </button>
+                            {isDone ? (
+                                <span className="bg-green-600 py-1 px-4 border-4 border-editor-2 flex justify-center items-center gap-x-2 rounded-xl font-black">
+                                    DONE
+                                </span>
+                            ) : (
+                                <span className="bg-red-600 py-1 px-4 border-4 border-editor-2 flex justify-center items-center gap-x-2 rounded-xl font-black">
+                                    ERROR
+                                </span>
+                            )}
+                        </div>
                     </h2>
                     <div className="bg-editor-1 w-full flex-grow overflow-auto resize-none outline-none text-white px-4 py-4 text-sm font-semibold">
                         {isDone ? (
