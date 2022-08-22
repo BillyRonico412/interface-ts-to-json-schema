@@ -17,10 +17,6 @@ import Head from "next/head";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 
-const notyf = new Notyf({
-    position: { x: "center", y: "bottom" },
-});
-
 const Home: NextPage = () => {
     const timeoutInput = useRef<number | null>(null);
     const [tscode, setTscode] = useState(
@@ -35,12 +31,18 @@ const Home: NextPage = () => {
     const [textError, setTextError] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const lineRef = useRef<HTMLDivElement | null>(null);
+    const notyf = useRef<Notyf | null>(null);
 
     useEffect(() => {
         if (textareaRef.current) {
             textareaRef.current.value =
                 "{\n   first: (number|string[])[];\n   second: boolean;\n}";
         }
+
+        notyf.current = new Notyf({
+            position: { x: "center", y: "bottom" },
+        });
+
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/sw.js");
         }
@@ -188,7 +190,7 @@ const Home: NextPage = () => {
                                                 jsonSchemaCode
                                             );
 
-                                            notyf.success("Copy successfuly!");
+                                            notyf.current?.success("Copy successfuly!");
                                         }
                                     }}
                                 >
