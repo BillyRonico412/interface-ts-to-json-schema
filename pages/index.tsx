@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { SiTypescript } from "react-icons/si";
-import { FaCopy } from "react-icons/fa";
+import { FaCopy, FaGithub } from "react-icons/fa";
 import { BsBraces, BsFillTrashFill } from "react-icons/bs";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LL, parser, scanner } from "@ronico.billy/ll";
@@ -118,17 +118,26 @@ const Home: NextPage = () => {
                             <SiTypescript className="text-xl text-blue-600 bg-white" />
                             Typescript
                         </span>
-                        <button
-                            className="ml-auto mr-4 text-gray-300"
-                            onClick={() => {
-                                if (textareaRef.current) {
-                                    textareaRef.current.value = "";
-                                }
-                                setTscode("");
-                            }}
-                        >
-                            <BsFillTrashFill />
-                        </button>
+                        <div className="ml-auto mr-4 flex items-center gap-x-4">
+                            <a
+                                href="https://github.com/BillyRonico412/interface-ts-to-json-schema"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                <FaGithub className="text-gray-300" />
+                            </a>
+                            <button
+                                className=" text-gray-300"
+                                onClick={() => {
+                                    if (textareaRef.current) {
+                                        textareaRef.current.value = "";
+                                    }
+                                    setTscode("");
+                                }}
+                            >
+                                <BsFillTrashFill />
+                            </button>
+                        </div>
                     </h2>
                     <div className="flex flex-grow overflow-hidden">
                         <div
@@ -190,7 +199,9 @@ const Home: NextPage = () => {
                                                 jsonSchemaCode
                                             );
 
-                                            notyf.current?.success("Copy successfuly!");
+                                            notyf.current?.success(
+                                                "Copy successfuly!"
+                                            );
                                         }
                                     }}
                                 >
