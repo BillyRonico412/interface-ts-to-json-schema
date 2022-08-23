@@ -75,7 +75,12 @@ const Home: NextPage = () => {
                         setIsDone(true);
                     } else {
                         setTextError(
-                            `${result.message} at ${result.line}:${result.col}\n${result.stringWithColored}`
+                            `${result.message} at ${result.line}:${
+                                result.col
+                            }\n${result.stringWithColored.replaceAll(
+                                ll.symbolEndLL,
+                                ""
+                            )}`
                         );
                         setIsDone(false);
                     }
